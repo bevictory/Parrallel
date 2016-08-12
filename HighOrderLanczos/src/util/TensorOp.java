@@ -138,7 +138,7 @@ public class TensorOp {
 		double []elem = tensor.getTensor();
 		Random random = new Random();
 		for(int i = 0;i<tensor.getSize();i++){
-			elem[i] = 1;//random.nextDouble();
+			elem[i] = 1+i;//random.nextDouble();
 		}
 	}
 public static Tensor multiOrderParallel(Tensor multiplicand , Tensor factor,double ...para){
@@ -150,19 +150,20 @@ public static Tensor multiOrderParallel(Tensor multiplicand , Tensor factor,doub
 		Tensor result = new Tensor(1,resultSize);
 		if(para.length==1){
 			double p = para[0];
+		
 			for(int i = 0;i < resultSize ;i++){
-				double number =0;
+				double number =0;	int resultLoc = i*multiSize;
 				for(int j=0; j< multiSize; j++){
-					number += multiplicand.getByLoc((i*multiSize)+j) * factor.getByLoc(j)*p;
+					number += multiplicand.getByLoc((resultLoc)+j) * factor.getByLoc(j)*p;
 				}
 				result.setByLoc(number, i);
 			}
 		}
 		else {
 			for(int i = 0;i < resultSize ;i++){
-				double number =0;
+				double number =0;	int resultLoc = i*multiSize;
 				for(int j=0; j< multiSize; j++){
-					number += multiplicand.getByLoc((i*multiSize)+j) * factor.getByLoc(j);
+					number += multiplicand.getByLoc((resultLoc)+j) * factor.getByLoc(j);
 //					System.out.printf("%.20f",multiplicand.getByLoc((i*multiSize)+j) * factor.getByLoc(j));
 //					System.out.println();
 //					System.out.printf("%.20f",number);

@@ -25,13 +25,14 @@ public class Lanczos {
 //		System.out.println(TensorOp.norm2(q));
 		startTime = System.currentTimeMillis();
 		int count =1;
-		List<Tensor> list = TensorOp.partion(tensor1, 2, 2);
-	    Tensor qlist = TensorOp.getPartFromTensor(q, 0, 8);
+//		List<Tensor> list = TensorOp.partion(tensor1, 2, 2);
+//	    Tensor qlist = TensorOp.getPartFromTensor(q, 0, 8);
 		u = TensorOp.multiOrderParallel(tensor1, q);
 
 		while(b-0 >10e-5){
 //			System.out.println("q*u");
 			a = TensorOp.multiOrderParallel(q, u).getByLoc(0);
+			System.out.println((System.currentTimeMillis()-startTime)+" " +" get a");
 //			System.out.println("a_"+count+" : "+a);
 			aList.add(a);
 			n = TensorOp.tesorSubStraction(u, q, a);
@@ -42,19 +43,20 @@ public class Lanczos {
 			//System.out.println(TensorOp.norm2(TensorOp.getPartFromTensor(n, 0, 8))+" norm");
 			
 			b = Math.sqrt(TensorOp.norm2(n));
+			System.out.println((System.currentTimeMillis()-startTime)+" " +" get norm");
 			bList.add(b);
 //			System.out.print("b_"+count+" : ");
 //			System.out.printf("%.20f", b);
 //			System.out.println();
 //			count=11;
 			count++;
-			if(b-0 <10e-5||count>10){
+			if(b-0 <10e-5||count==101){
 				System.out.println("ite num "+(count));
 				break;
 			}else {
 				
 				 TensorOp.multiNum(n, 1.0/b);
-				
+				 System.out.println((System.currentTimeMillis()-startTime)+" " +" get qNext");
 				 u = TensorOp.tesorSubStraction(TensorOp.multiOrderParallel(tensor1, n)
 						 , q, b);
 				 q=n;
@@ -72,7 +74,8 @@ public class Lanczos {
 	public static void main(String []args){
 		Lanczos lanczos = new Lanczos();
 		long startTime = System.currentTimeMillis();
-		Tensor tensor = new Tensor(4,4,4,4,4);
+		int dim =80;
+		Tensor tensor = new Tensor(4,dim,dim,dim,dim);
 		
 		TensorOp.tensorInit(tensor);
 		lanczos.deal(tensor, 2);
